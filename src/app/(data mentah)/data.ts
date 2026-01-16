@@ -58,7 +58,7 @@ export const books: Book[] = [
     cover: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop',
     category: 'Fiction',
     description: 'Between life and death there is a library, and within that library, the shelves go on forever. A moving exploration of regret and possibility.',
-    stock: 18,
+    stock: 0,
   },
   {
     id: '3',

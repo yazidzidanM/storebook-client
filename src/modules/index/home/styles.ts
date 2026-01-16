@@ -8,7 +8,7 @@ export const heroGlow =
   "absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,#C6A96B22,transparent_60%)]";
 
 export const badge =
-  "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm bg-primary/10 text-primary border border-primary/20 dark:bg-[#C6A96B]/10 dark:text-[#C6A96B] dark:border-[#C6A96B]/20";
+  "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm bg-indigo-600/10 text-indigo-600 border border-indigo-600/20 dark:bg-[#C6A96B]/10 dark:text-[#C6A96B] dark:border-[#C6A96B]/20";
 
 export const heroPrimaryBtn =
   "px-8 bg-indigo-600 text-white hover:bg-indigo=600/90 dark:bg-[#C6A96B] dark:text-black dark:hover:bg-[#B89A5F] shadow-[0_10px_30px_rgba(198,169,107,0.35)]";
@@ -42,4 +42,4 @@ export const loginBtn =
   " cursor-pointer px-3 text-muted-foreground hover:text-foreground hover:bg-transparent transition-colors";
 
 export const registerBtn = 
-  "      cursor-pointer px-4 bg-indigo-600 text-white hover:bg-indigo-600/90 shadow-sm dark:bg-[#C6A96B] dark:text-black dark:hover:bg-[#B89A5F] dark:shadow-[0_6px_20px_rgba(198,169,107,0.35)]"
+  " cursor-pointer px-4 bg-indigo-600 text-white hover:bg-indigo-600/90 shadow-sm dark:bg-[#C6A96B] dark:text-black dark:hover:bg-[#B89A5F] dark:shadow-[0_6px_20px_rgba(198,169,107,0.35)]"

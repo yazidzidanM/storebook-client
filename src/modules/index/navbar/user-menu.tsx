@@ -15,14 +15,16 @@ import * as s from "../home/styles";
 export function UserMenu({
   user,
   isAuthenticated,
+  logout
 }: {
   user: { name: string; role: string } | null;
   isAuthenticated: boolean;
+  logout: () => void
 }) {
   const router = useRouter();
 
   const handleLogout = async () => {
-    // server action nanti
+    logout()
     router.push("/login");
   };
 
@@ -74,7 +76,7 @@ export function UserMenu({
           Profile
         </DropdownMenuItem>
 
-        <DropdownMenuItem onClick={handleLogout} className="text-destructive">
+        <DropdownMenuItem onClick={() => handleLogout()} className="text-destructive">
           <LogOut className="w-4 h-4 mr-2" />
           Logout
         </DropdownMenuItem>

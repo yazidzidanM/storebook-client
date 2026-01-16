@@ -12,13 +12,13 @@ import * as s from "./home/styles";
 
 export function Footer({ theme }: { theme: any }) {
   return (
-    <footer className="relative bg-gray-900 dark:bg-linear-to-b dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F] text-white dark:text-[#C6A96B]">
+    <footer className="relative dark:border dark:border-t-[#c6a96b88] bg-gray-900 dark:bg-linear-to-b dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F] text-white dark:text-[#C6A96B]">
       {theme === "dark" && <div className={s.heroGlow} />}
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-primary text-primary-foreground">
+              <div className="p-2 rounded-lg bg-indigo-600 text-white dark:bg-[#C6A96B]">
                 <Book className="w-5 h-5" />
               </div>
               <span className="font-serif text-xl font-semibold">
@@ -131,15 +131,15 @@ export function Footer({ theme }: { theme: any }) {
             <h4 className="font-serif font-semibold mb-4">Contact Us</h4>
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-sm opacity-80">
-                <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
                 <span>Jl. Sudirman No. 123, Jakarta Pusat, Indonesia</span>
               </li>
               <li className="flex items-center gap-3 text-sm opacity-80">
-                <Phone className="w-4 h-4 flex-shrink-0" />
+                <Phone className="w-4 h-4 shrink-0" />
                 <span>+62 21 1234 5678</span>
               </li>
               <li className="flex items-center gap-3 text-sm opacity-80">
-                <Mail className="w-4 h-4 flex-shrink-0" />
+                <Mail className="w-4 h-4 shrink-0" />
                 <span>hello@bookstore.id</span>
               </li>
             </ul>

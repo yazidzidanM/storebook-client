@@ -42,7 +42,7 @@ export function BookCard({ book }: BookCardProps) {
       dark:hover:shadow-[0_30px_60px_rgba(198,169,107,0.25)]
     "
     >
-      <div className="relative aspect-[3/4] overflow-hidden">
+      <div className="relative aspect-3/4 overflow-hidden">
         <img
           src={book.cover}
           alt={book.title}
@@ -56,7 +56,7 @@ export function BookCard({ book }: BookCardProps) {
         <div
           className="
           absolute inset-0
-          bg-gradient-to-t
+          bg-linear-to-t
           from-black/40 via-transparent to-transparent
           opacity-0 group-hover:opacity-100
           transition-opacity duration-300
@@ -81,8 +81,7 @@ export function BookCard({ book }: BookCardProps) {
           <span
             className="
             px-3 py-1 rounded-full text-xs font-medium
-            bg-white/90 text-foreground
-            border border-border
+            bg-white/70 text-indigo-600 
 
             dark:bg-black/60
             dark:text-[#C6A96B]

@@ -14,11 +14,16 @@ import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { toast, Toaster } from "sonner";
 import * as s from "../../../modules/index/home/styles"
+import loginAction, { res } from "@/logic/login/loginAction";
+import { useRouter } from "next/navigation";
+import useAuthStore from "@/store/authStore";
 
 export default function LoginPage() {
+  const {setUser, setAuthentication, setToken} = useAuthStore()
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const theme = useTheme();
+  const router = useRouter()
   const isDarkMode = theme.resolvedTheme === "dark";
 
   const {
@@ -33,11 +38,22 @@ export default function LoginPage() {
       password: "",
     },
   });
-  const onSubmit = (data: TLogin) => {
+  const onSubmit = async (data: TLogin) => {
     setIsLoading(true);
-    console.log("Logging in with:", data);
-    toast.success("Logged in successfully!");
-    setIsLoading(false);
+    const returned = await loginAction(data)
+    const payload = returned.data as res
+    console.log(returned)
+    if(returned.success){
+      setAuthentication(true)
+      setUser(payload.user)
+      setToken(payload.access_token)
+      toast.success("Logged in successfully!");
+      reset()
+      router.push("/")
+    }else{
+      toast.error("credential not match!");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -134,7 +150,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="w-full btn-hero cursor-pointer 
+                className="w-full cursor-pointer 
               bg-linear-to-r from-blue-600  via-indigo-600 to-violet-600 text-white 
               dark:bg-linear-to-r dark:from-[#C6A96B] dark:via-[#695a39] dark:to-[#413821] dark:border-white/10
               py-3
@@ -147,7 +163,7 @@ export default function LoginPage() {
 
             <div className="text-center text-sm">
               <span className="text-muted-foreground">
-                Don't have an account?
+                Don&apos;t have an account?
               </span>{" "}
               <Link
                 href="/register"

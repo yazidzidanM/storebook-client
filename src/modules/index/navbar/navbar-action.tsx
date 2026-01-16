@@ -1,25 +1,28 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Menu, X, ShoppingCart } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { UserMenu } from "./user-menu"
-import { MobileMenu } from "./mobile-menu"
-import { ModeToggle } from "@/components/common/toggleDarkMode"
+import { useState } from "react";
+import Link from "next/link";
+import { Menu, X, ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { UserMenu } from "./user-menu";
+import { MobileMenuSheet } from "./mobile-menu";
+import { ModeToggle } from "@/components/common/toggleDarkMode";
+import useAuthStore from "@/store/authStore";
 
 export function NavbarActions() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const {user, isAuthenticated, logout} = useAuthStore()
 
   // TODO: ganti dari server session / context
-  const isAuthenticated = false
-  const totalItems = 3
-  const user = { name: "John", role: "admin" }
+  const totalItems = 3;
 
   return (
     <>
       <div className="hidden md:flex items-center gap-3">
-        <Link href="/cart" className="relative p-2 rounded-lg hover:bg-secondary">
+        <Link
+          href="/cart"
+          className="relative p-2 rounded-lg hover:bg-secondary"
+        >
           <ShoppingCart className="w-5 h-5" />
           {totalItems > 0 && (
             <span className="absolute -top-1 -right-1 text-xs bg-indigo-600 dark:bg-[#C6A96B] text-white dark:text-[#111111] rounded-full w-5 h-5 flex items-center justify-center">
@@ -28,18 +31,18 @@ export function NavbarActions() {
           )}
         </Link>
 
-        <UserMenu user={user} isAuthenticated={isAuthenticated} />
+        <UserMenu user={user} isAuthenticated={isAuthenticated} logout={logout}/>
         <ModeToggle />
       </div>
 
       <button
         className="md:hidden p-2 rounded-lg hover:bg-secondary"
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        onClick={() => setIsMenuOpen(true)}
       >
-        {isMenuOpen ? <X /> : <Menu />}
+        <Menu />
       </button>
 
-      <MobileMenu
+      <MobileMenuSheet
         open={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
         isAuthenticated={isAuthenticated}
@@ -47,5 +50,5 @@ export function NavbarActions() {
         totalItems={totalItems}
       />
     </>
-  )
+  );
 }

@@ -165,3 +165,7 @@
 .read-the-docs {
   color: #888;
 }
+
+.scroll-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}

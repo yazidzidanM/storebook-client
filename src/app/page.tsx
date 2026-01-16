@@ -10,8 +10,10 @@ import { Footer } from "@/modules/index/footer";
 import * as s from "@/modules/index/home/styles";
 import { SectionHeader } from "@/modules/index/home/section-header";
 import { useTheme } from "next-themes";
+import useAuthStore from "@/store/authStore";
 
 export default function Home() {
+  const { user, isAuthenticated } = useAuthStore();
   const featuredBooks = books.slice(0, 4);
   const newArrivals = books.slice(4, 8);
   const theme = useTheme();
@@ -22,7 +24,7 @@ export default function Home() {
 
       <section className={s.section}>
         <div className={s.heroGlow} />
-        <div className="container mx-auto px-4 py-16 md:py-24">
+        <div className="container mx-auto px-4 py-16 md:py-24 ">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 animate-slide-up">
               <div className={s.badge}>
@@ -128,7 +130,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="flex items-center gap-4 p-4 ">
-              <div className="p-3 rounded-xl bg-indigo-600/10 dark:bg-[#C6A96B]/10/10">
+              <div className="p-3 rounded-xl bg-indigo-600/10 dark:bg-[#C6A96B]/10">
                 <BookOpen className="w-6 h-6 text-indigo-600 dark:text-[#C6A96B]" />
               </div>
               <div>
@@ -247,7 +249,7 @@ export default function Home() {
         text-white dark:text-[#C6A96B]"
       >
         {theme.resolvedTheme === "dark" && (
-          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_bottom,#C6A96B22,transparent_40%)]" />
+          <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_bottom,#C6A96B22,transparent_33%)]" />
         )}
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl md:text-3xl font-serif font-bold mb-4">
@@ -258,9 +260,15 @@ export default function Home() {
             journey.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Button size="lg" variant="secondary" className="px-8" asChild>
-              <Link href="/register">Create Account</Link>
-            </Button>
+            {user && isAuthenticated ? (
+              <Button size="lg" variant="secondary" className="px-8" asChild>
+                <Link href="/cart">Checkout More Book</Link>
+              </Button>
+            ) : (
+              <Button size="lg" variant="secondary" className="px-8" asChild>
+                <Link href="/register">Create Account</Link>
+              </Button>
+            )}
             <Button
               size="lg"
               variant="ghost"
