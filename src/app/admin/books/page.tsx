@@ -8,7 +8,7 @@ import * as s from "../../../modules/index/home/styles";
 import useAuthStore from "@/store/authStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiPrivate } from "@/instance/axios";
-import apiResponse from "@/types/res/response";
+import { apiResponse } from "@/types/res/response";
 import { useRouter } from "next/navigation";
 // import { books, categories } from "@/app/(data mentah)/data";
 import { TableCardSkeleton } from "@/components/skeletons/tableSkeleton";
@@ -147,7 +147,7 @@ const AdminBooks = () => {
 
   const rendering = books?.data?.map((book: TBook) => {
     const category = categories?.data?.find(
-      (category: TCategory) => category.id === Number(book.categoryId)
+      (category: TCategory) => category.id === Number(book.categoryId),
     );
     return { ...book, category: category?.name };
   });
@@ -156,7 +156,7 @@ const AdminBooks = () => {
     rendering?.filter(
       (book: TBook) =>
         book.title.toLowerCase().includes(search.toLowerCase()) ||
-        book.author.toLowerCase().includes(search.toLowerCase())
+        book.author.toLowerCase().includes(search.toLowerCase()),
     ) ?? [];
 
   useEffect(() => {

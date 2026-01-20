@@ -1,4 +1,4 @@
-type apiResponse<T> = {
+export type apiResponse<T> = {
   code: number;
   success: boolean;
   message: string;
@@ -17,4 +17,3 @@ export type auth = {
   cartId: number;
   access_token: string;
 };
-    export default apiResponse

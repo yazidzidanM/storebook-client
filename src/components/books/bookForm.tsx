@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/select";
 import { bookSchema, TBook } from "@/validation/book";
 import { TCategory } from "@/validation/category";
-import apiResponse from "@/types/res/response";
+import {apiResponse} from "@/types/res/response";
 
 type Props = {
   mode: string;
@@ -180,7 +180,7 @@ export function BookForm({
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories?.data?.map((c) => (
+                    {categories?.data?.map((c: TCategory) => (
                       <SelectItem key={c.id} value={String(c.id)}>
                         {c.name}
                       </SelectItem>

@@ -1,7 +1,7 @@
 "use server"
 
 import { apiPrivate, apiPublic } from "@/instance/axios";
-import apiResponse, { auth } from "@/types/res/response";
+import { apiResponse, auth } from "@/types/res/response";
 import { LoginSchema } from "@/validation/login";
 
 export default async function loginAction(payload: any) {

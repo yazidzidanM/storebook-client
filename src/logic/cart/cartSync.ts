@@ -1,7 +1,7 @@
 "use server";
 
 import { apiPrivate } from "@/instance/axios";
-import apiResponse from "@/types/res/response";
+import {apiResponse} from "@/types/res/response";
 
 export type cartItems = {
   bookId: number;

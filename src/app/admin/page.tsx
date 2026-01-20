@@ -13,11 +13,8 @@ import * as s from "../../modules/index/home/styles";
 
 import useAuthStore from "@/store/authStore";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { apiPrivate } from "@/instance/axios";
-import apiResponse from "@/types/res/response";
-import { TCategory } from "@/validation/category";
 import { useEffect } from "react";
 
 const AdminDashboard = () => {
@@ -56,7 +53,7 @@ const AdminDashboard = () => {
       },
       enabled: !!token,
     }) ?? [];
-    
+
   const stats = [
     {
       label: "Total Books",

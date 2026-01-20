@@ -14,7 +14,7 @@ import { useCartStore } from "@/store/cartStore";
 import { TBook } from "@/validation/book";
 import { apiPublic } from "@/instance/axios";
 import { TCategory } from "@/validation/category";
-import apiResponse from "@/types/res/response";
+import {apiResponse} from "@/types/res/response";
 import { useQuery } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";

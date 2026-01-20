@@ -20,7 +20,7 @@ import * as s from "../../../modules/index/home/styles";
 import { useQuery } from "@tanstack/react-query";
 import { apiPublic } from "@/instance/axios";
 import { TCategory } from "@/validation/category";
-import apiResponse from "@/types/res/response";
+import {apiResponse} from "@/types/res/response";
 import { TBook } from "@/validation/book";
 import { useCartStore } from "@/store/cartStore";
 

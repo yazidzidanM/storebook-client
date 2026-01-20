@@ -1,7 +1,7 @@
 "use server"
 
 import { apiPublic } from "@/instance/axios";
-import apiResponse, { res } from "@/types/res/response";
+import { apiResponse, auth } from "@/types/res/response";
 import { RegisterSchema } from "@/validation/register";
 
 
@@ -17,7 +17,7 @@ export default async function registerAction(payload: any) {
 
   try {
     const response = await apiPublic.post("/api/auth/register", payload);
-    const data = response.data as apiResponse<res>;
+    const data = response.data as apiResponse<auth>;
 
     if (data.code === 201) {
       return {
