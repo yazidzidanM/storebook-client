@@ -17,17 +17,58 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { BookCard } from "@/components/books/bookCard";
 import * as s from "../../../modules/index/home/styles";
+import { useQuery } from "@tanstack/react-query";
+import { apiPublic } from "@/instance/axios";
+import { TCategory } from "@/validation/category";
+import apiResponse from "@/types/res/response";
+import { TBook } from "@/validation/book";
+import { useCartStore } from "@/store/cartStore";
 
 const BookDetail = () => {
+  const { items, addItem, totalitems } = useCartStore();
+  
   const { id } = useParams();
   const theme = useTheme();
   console.log(id);
-  // const addToCart = useCartStore((state) => state.addToCart);
 
-  const book = books.find((b) => b.id === id);
-  const relatedBooks = books
-    .filter((b) => b.category === book?.category && b.id !== id)
-    .slice(0, 4);
+  const { data: books, isLoading: isBookLoading } =
+    useQuery({
+      queryKey: ["books"],
+      queryFn: async () => {
+        const res = await apiPublic.get("/api/books");
+        return res.data;
+      },
+    }) ?? [];
+
+  const { data: categories, isLoading: isCategoriesLoading } =
+    useQuery<apiResponse<TCategory>, boolean, apiResponse<TCategory>>({
+      queryKey: ["categories"],
+      queryFn: async () => {
+        const res = await apiPublic.get("/api/categories");
+        return res.data;
+      },
+    }) ?? [];
+
+  const fullsetBook =
+    books?.data && categories?.data
+      ? books.data.map((book: TBook) => {
+          const category = categories.data.find(
+            (category: TCategory) => category.id === Number(book.categoryId),
+          );
+
+          return { ...book, category: category?.name };
+        })
+      : [];
+
+  const book: TBook = fullsetBook.find((book: TBook) => book.id === Number(id));
+  
+  const relatedBooks = fullsetBook.filter((item: TBook) => {
+    return item?.categoryId === book?.categoryId && item.id !== Number(id)
+  }) ?? [];
+
+  const addToCart = (id: number) => {
+    addItem({ bookId: String(id), quantity: 1 });
+  };
 
   if (!book) {
     return (
@@ -89,7 +130,7 @@ const BookDetail = () => {
             <div className="space-y-4">
               <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-elevated">
                 <img
-                  src={book.cover}
+                  src={book.image}
                   alt={book.title}
                   className="w-full h-full object-cover"
                 />
@@ -188,8 +229,8 @@ const BookDetail = () => {
                 Related Books
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {relatedBooks.map((relBook) => (
-                  <BookCard key={relBook.id} book={relBook} />
+                {relatedBooks.map((relBook: TBook) => (
+                  <BookCard key={relBook.id} book={relBook} handleAddToCart={addToCart}/>
                 ))}
               </div>
             </section>

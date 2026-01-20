@@ -1,54 +1,66 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/common/toggleDarkMode";
 import { UserMenu } from "./user-menu";
 import { MobileMenuSheet } from "./mobile-menu";
-import { ModeToggle } from "@/components/common/toggleDarkMode";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import useAuthStore from "@/store/authStore";
+import { useCartStore } from "@/store/cartStore";
 
 export function NavbarActions() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const {user, isAuthenticated, logout} = useAuthStore()
+  const { user, isAuthenticated, logout } = useAuthStore();
+  const { totalitems } = useCartStore();
+  const totalitem = totalitems();
 
-  // TODO: ganti dari server session / context
-  const totalItems = 3;
+  const logOut = () => {
+    logout();
+    useAuthStore.persist.clearStorage();
+    useCartStore.setState({ items: [] });
+    useCartStore.persist.clearStorage();
+  };
 
   return (
     <>
+      {/* ===== DESKTOP ===== */}
       <div className="hidden md:flex items-center gap-3">
         <Link
           href="/cart"
           className="relative p-2 rounded-lg hover:bg-secondary"
         >
           <ShoppingCart className="w-5 h-5" />
-          {totalItems > 0 && (
+          {totalitem > 0 && (
             <span className="absolute -top-1 -right-1 text-xs bg-indigo-600 dark:bg-[#C6A96B] text-white dark:text-[#111111] rounded-full w-5 h-5 flex items-center justify-center">
-              {totalItems}
+              {totalitem}
             </span>
           )}
         </Link>
 
-        <UserMenu user={user} isAuthenticated={isAuthenticated} logout={logout}/>
+        <UserMenu
+          user={user}
+          isAuthenticated={isAuthenticated}
+          logout={logOut}
+        />
         <ModeToggle />
       </div>
 
-      <button
-        className="md:hidden p-2 rounded-lg hover:bg-secondary"
-        onClick={() => setIsMenuOpen(true)}
-      >
-        <Menu />
-      </button>
+      {/* ===== MOBILE ===== */}
+      <Sheet>
+        <SheetTrigger asChild>
+          <button className="md:hidden p-2 rounded-lg hover:bg-secondary">
+            <Menu />
+          </button>
+        </SheetTrigger>
 
-      <MobileMenuSheet
-        open={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        isAuthenticated={isAuthenticated}
-        user={user}
-        totalItems={totalItems}
-      />
+        <MobileMenuSheet
+          isAuthenticated={isAuthenticated}
+          user={user}
+          totalItems={totalitem}
+          onLogout={logOut}
+        />
+      </Sheet>
     </>
   );
 }

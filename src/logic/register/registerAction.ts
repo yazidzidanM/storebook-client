@@ -1,11 +1,12 @@
 "use server"
 
-import { apiPrivate, apiPublic } from "@/instance/axios";
-import apiResponse, { auth } from "@/types/res/response";
-import { LoginSchema } from "@/validation/login";
+import { apiPublic } from "@/instance/axios";
+import apiResponse, { res } from "@/types/res/response";
+import { RegisterSchema } from "@/validation/register";
 
-export default async function loginAction(payload: any) {
-  const validated = LoginSchema.safeParse(payload);
+
+export default async function registerAction(payload: any) {
+  const validated = RegisterSchema.safeParse(payload);
   if (!validated.success) {
     return {
       success: false,
@@ -15,10 +16,10 @@ export default async function loginAction(payload: any) {
   }
 
   try {
-    const response = await apiPublic.post("/api/auth/login", payload);
-    const data = response.data as apiResponse<auth>;
+    const response = await apiPublic.post("/api/auth/register", payload);
+    const data = response.data as apiResponse<res>;
 
-    if (data.code === 200) {
+    if (data.code === 201) {
       return {
         success: true,
         message: data.message,

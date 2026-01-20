@@ -6,4 +6,15 @@ type apiResponse<T> = {
   stack?: string
 } 
 
-export default apiResponse
+
+export type auth = {
+  user: {
+    uuid: string;
+    name: string;
+    username: string;
+    role: string;
+  };
+  cartId: number;
+  access_token: string;
+};
+    export default apiResponse

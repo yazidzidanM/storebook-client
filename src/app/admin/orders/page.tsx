@@ -1,5 +1,4 @@
-// import { useAuthStore } from '@/store/authStore';
-
+"use client"
 import { orders } from "@/app/(data mentah)/data";
 import * as s from "../../../modules/index/home/styles";
 import useAuthStore from "@/store/authStore";

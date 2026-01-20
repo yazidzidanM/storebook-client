@@ -1,20 +1,15 @@
 import { ShoppingCart, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Book } from "@/app/(data mentah)/data";
 import Link from "next/link";
+import { TBook } from "@/validation/book";
 
 interface BookCardProps {
-  book: Book;
+  book: TBook;
+  handleAddToCart: (id: number, stock: number) => void;
 }
 
-export function BookCard({ book }: BookCardProps) {
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toast(`Added "${book.title}" to cart!`);
-  };
-
+export function BookCard({ book, handleAddToCart }: BookCardProps) {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -44,7 +39,7 @@ export function BookCard({ book }: BookCardProps) {
     >
       <div className="relative aspect-3/4 overflow-hidden">
         <img
-          src={book.cover}
+          src={book.image}
           alt={book.title}
           className="
           w-full h-full object-cover
@@ -103,9 +98,13 @@ export function BookCard({ book }: BookCardProps) {
         >
           <Button
             size="sm"
-            onClick={handleAddToCart}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleAddToCart(Number(book.id), book.stock);
+            }}
             className="
-            flex-1
+            flex-1 cursor-pointer
             bg-indigo-600 text-white
             hover:bg-indigo-600/90
 

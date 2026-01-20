@@ -1,20 +1,27 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 
 interface User {
   uuid: string;
   name: string;
   username: string;
   role: string;
+  phone?: string;
+  address?: string 
 }
 
 interface Store {
   user: User | null;
-  setUser: (user: User) => void;
   isAuthenticated: boolean;
-  setAuthentication: (isAuthenticated: boolean) => void;
   token: string | null;
+  cartId: number | null
+
+  hasHydrated: boolean;
+
+  setUser: (user: User) => void;
+  setAuthentication: (isAuthenticated: boolean) => void;
   setToken: (token: string) => void;
+  setCartId: (cartId: number) => void;
   logout: () => void;
 }
 
@@ -24,13 +31,27 @@ const useAuthStore = create<Store>()(
       user: null,
       isAuthenticated: false,
       token: null,
+      hasHydrated: false,
+      cartId: null,
+
       setUser: (user) => set({ user, isAuthenticated: true }),
       setAuthentication: (isAuthenticated) => set({ isAuthenticated }),
       setToken: (token) => set({ token }),
-      logout: () => set({ user: null, isAuthenticated: false }),
+      setCartId: (cartId) => set({cartId}),
+
+      logout: () =>
+        set({
+          user: null,
+          isAuthenticated: false,
+          token: null,
+          cartId: null
+        }),
     }),
     {
-      name: "auth-storage", 
+      name: "auth-storage",
+      onRehydrateStorage: () => () => {
+        useAuthStore.setState({ hasHydrated: true });
+      },
     }
   )
 );

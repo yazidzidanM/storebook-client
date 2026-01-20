@@ -32,13 +32,10 @@ const menuItems = [
 ];
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
+  const { user, logout } = useAuthStore();
+  const pathname = usePathname()
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const pathname = usePathname()
-  console.log(pathname)
-  // const location = useLocation();
-  // const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
 
   const handleLogout = () => {
     logout();

@@ -8,22 +8,23 @@ import {
   TrendingUp,
   DollarSign,
 } from "lucide-react";
-import { books, categories, mockUsers, orders } from "../(data mentah)/data";
+import { mockUsers, orders } from "../(data mentah)/data";
 import * as s from "../../modules/index/home/styles";
 
 import useAuthStore from "@/store/authStore";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { apiPrivate } from "@/instance/axios";
+import apiResponse from "@/types/res/response";
+import { TCategory } from "@/validation/category";
+import { useEffect } from "react";
 
 const AdminDashboard = () => {
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated, token, hasHydrated } = useAuthStore();
   const router = useRouter();
 
-  if (!isAuthenticated || user?.role !== "admin") {
-    toast.error("forbidden");
-    router.push("/login");
-    return null;
-  }
+  const api = apiPrivate(token || "");
 
   const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
   const pendingOrders = orders.filter((o) => o.status === "pending").length;
@@ -36,10 +37,33 @@ const AdminDashboard = () => {
     }).format(price);
   };
 
+  const { data: books, isLoading: isBookLoading } =
+    useQuery({
+      queryKey: ["books"],
+      queryFn: async () => {
+        const res = await api.get("/api/books");
+        return res.data;
+      },
+      enabled: !!token,
+    }) ?? [];
+
+  const { data: categories, isLoading: isCategoriesLoading } =
+    useQuery({
+      queryKey: ["categories"],
+      queryFn: async () => {
+        const res = await api.get("/api/categories");
+        return res.data;
+      },
+      enabled: !!token,
+    }) ?? [];
+
+    console.log(books?.data?.length)
+    console.log(categories?.data?.length)
+
   const stats = [
     {
       label: "Total Books",
-      value: books.length,
+      value: books?.data?.length,
       icon: Book,
       color:
         "bg-indigo-600/10 text-indigo-600 dark:text-[#C6A96B] dark:bg-[#C6A96B]/10",
@@ -47,7 +71,7 @@ const AdminDashboard = () => {
     },
     {
       label: "Categories",
-      value: categories.length,
+      value: categories?.data?.length,
       icon: FolderTree,
       color: "bg-green-600/10 text-green-600",
       link: "/admin/categories",
@@ -68,6 +92,14 @@ const AdminDashboard = () => {
       link: "/admin/orders",
     },
   ];
+
+  useEffect(() => {
+      if (!hasHydrated) return;
+    
+      if (!isAuthenticated || user?.role !== "admin" || !token) {
+        router.replace("/login");
+      }
+    }, [hasHydrated, isAuthenticated, user, token, router]);
 
   return (
     <div className="relative h-full p-6 space-y-8 dark:bg-linear-to-b dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F]">

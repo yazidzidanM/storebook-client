@@ -7,11 +7,11 @@ import * as s from "../../modules/index/home/styles"
 const About = () => {
   const theme = useTheme()
   return (
-    <div className="min-h-screen flex flex-col dark:bg-[linear-gradient(180deg,#2E2E2E_0%,#1A1A1A_45%,#0F0F0F_100%)]">
+    <div className={s.page}>
       <Navbar />
 
       <main className="relative flex-1 dark:bg-linear-to-t dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F]">
-        <div className={s.heroGlow} />
+        {theme.resolvedTheme === "dark" && <div className={s.heroGlow} />}
         <section className="py-16 bg-linear-to-br from-indigo-600/5 via-background to-accent/30">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6"><span className="dark:text-[#C6A96B]">About </span> BookStore</h1>

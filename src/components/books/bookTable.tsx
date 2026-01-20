@@ -14,7 +14,7 @@ const BookTable = ({
   filteredBooks: TBook[];
   handleMode: (mode: Mode) => void;
   handleOpen: (truthy: boolean) => void;
-  handleDelete: (id: number) => void;
+  handleDelete: (book: TBook) => void;
   handleSelectedBook: (selected: TBook) => void;
 }) => {
   const formatPrice = (price: number) => {
@@ -118,7 +118,7 @@ const BookTable = ({
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-destructive hover:bg-destructive/10 cursor-pointer"
-                      onClick={() => handleDelete(book.id!)}
+                      onClick={() => handleDelete(book)}
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>

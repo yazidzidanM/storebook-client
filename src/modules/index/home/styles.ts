@@ -1,8 +1,10 @@
 export const page =
-  "min-h-screen w-full flex flex-col text-foreground bg-background dark:bg-[linear-gradient(180deg,#2E2E2E_0%,#1A1A1A_45%,#0F0F0F_100%)]";
+  "min-h-screen w-full flex flex-col text-foreground bg-background \
+        dark:bg-linear-to-t dark:from-[#2e2e2eb6] dark:to-[#c6a96b44] dark:via-[#0f0f0faf]";
 
 export const section =
-  "relative overflow-hidden bg-background dark:bg-[linear-gradient(180deg,#2E2E2E_0%,#1A1A1A_50%,#0F0F0F_100%)]";
+  "relative overflow-hidden bg-linear-to-br from-indigo-600/5 via-background to-background \
+      dark:bg-linear-to-b dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F]";
 
 export const heroGlow =
   "absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top,#C6A96B22,transparent_60%)]";

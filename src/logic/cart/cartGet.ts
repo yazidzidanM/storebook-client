@@ -1,22 +1,14 @@
 "use server"
 
-import { apiPrivate, apiPublic } from "@/instance/axios";
-import apiResponse, { auth } from "@/types/res/response";
-import { LoginSchema } from "@/validation/login";
+import { apiPrivate } from "@/instance/axios";
 
-export default async function loginAction(payload: any) {
-  const validated = LoginSchema.safeParse(payload);
-  if (!validated.success) {
-    return {
-      success: false,
-      data: {},
-      error: validated.error,
-    };
-  }
-
+export default async function getCartItems(token: string){
+  const api = apiPrivate(token);
   try {
-    const response = await apiPublic.post("/api/auth/login", payload);
-    const data = response.data as apiResponse<auth>;
+    const response = await api.get(`/api/cartItems`);
+    const data = response.data
+
+    console.log(data)
 
     if (data.code === 200) {
       return {
@@ -30,7 +22,7 @@ export default async function loginAction(payload: any) {
     return {
       success: false,
       message: data.message,
-      data: data.data,
+      data: data,
       error: data.stack || "Unknown error",
     };
   } catch (err: any) {
@@ -45,4 +37,3 @@ export default async function loginAction(payload: any) {
     };
   }
 }
-

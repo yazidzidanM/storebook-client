@@ -13,17 +13,22 @@ import { ModeToggle } from "@/components/common/toggleDarkMode";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { toast, Toaster } from "sonner";
-import * as s from "../../../modules/index/home/styles"
-import loginAction, { res } from "@/logic/login/loginAction";
+import * as s from "../../../modules/index/home/styles";
+import loginAction from "@/logic/login/loginAction";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/authStore";
+import { auth } from "@/types/res/response";
+import { useCartStore } from "@/store/cartStore";
+import syncCartItems, { cartItems } from "@/logic/cart/cartSync";
+import getCartItems from "@/logic/cart/cartGet";
 
 export default function LoginPage() {
-  const {setUser, setAuthentication, setToken} = useAuthStore()
+  const { setUser, setAuthentication, setToken, setCartId } = useAuthStore();
+  const { items, clearCart, addItem } = useCartStore();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const theme = useTheme();
-  const router = useRouter()
+  const router = useRouter();
   const isDarkMode = theme.resolvedTheme === "dark";
 
   const {
@@ -38,22 +43,50 @@ export default function LoginPage() {
       password: "",
     },
   });
+
   const onSubmit = async (data: TLogin) => {
     setIsLoading(true);
-    const returned = await loginAction(data)
-    const payload = returned.data as res
-    console.log(returned)
-    if(returned.success){
-      setAuthentication(true)
-      setUser(payload.user)
-      setToken(payload.access_token)
-      toast.success("Logged in successfully!");
-      reset()
-      router.push("/")
-    }else{
+
+    const returned = await loginAction(data);
+
+    if (!returned.success) {
       toast.error("credential not match!");
       setIsLoading(false);
+      return;
     }
+
+    const authenticatedUser = returned.data as auth;
+
+    let cartItems: cartItems[] = [];
+    
+    if (items.length > 0) {
+      console.log("sync")
+      const syncedCart = await syncCartItems(items, authenticatedUser.access_token);
+      cartItems = syncedCart.data as cartItems[];
+    } else {
+      console.log("get")
+      const getCart = await getCartItems(authenticatedUser.access_token);
+      console.log(getCart)
+      cartItems = getCart.data as cartItems[];
+    }
+    console.log(items.length)
+
+    setAuthentication(true);
+    setUser(authenticatedUser.user);
+    setToken(authenticatedUser.access_token);
+    setCartId(authenticatedUser.cartId);
+
+    clearCart();
+    for (const item of cartItems) {
+      addItem({
+        bookId: String(item.bookId),
+        quantity: item.quantity,
+      });
+    }
+
+    toast.success("Logged in successfully!");
+    reset();
+    router.push("/");
   };
 
   return (
@@ -63,11 +96,11 @@ export default function LoginPage() {
           className={cn(
             "relative overflow-hidden flex-1 flex items-center justify-center p-8",
             isDarkMode
-            ? "dark:bg-linear-to-tr from-[#0F0F0F] via-[#1A1A1A] to-[#2E2E2E]"
-              : ""
-            )}
+              ? "dark:bg-linear-to-tr from-[#0F0F0F] via-[#1A1A1A] to-[#2E2E2E]"
+              : "",
+          )}
         >
-            <div className={s.heroGlow} />
+          <div className={s.heroGlow} />
           <div className="absolute top-4 left-4">
             <ModeToggle />
           </div>
@@ -175,10 +208,10 @@ export default function LoginPage() {
             <div className="mt-8 p-4 bg-secondary/50 rounded-lg">
               <p className="text-xs font-medium mb-2">Demo Credentials:</p>
               <p className="text-xs text-muted-foreground">
-                Admin: admin@bookstore.com / admin123
+                Admin: admin123 / admin123
               </p>
               <p className="text-xs text-muted-foreground">
-                User: user@bookstore.com / user123
+                User: user1234 / user1234
               </p>
             </div>
           </div>
@@ -195,7 +228,9 @@ export default function LoginPage() {
             <div className="text-center space-y-6">
               <h2 className="text-5xl font-serif font-bold dark:text-white leading-tight">
                 Discover a World <br /> of{" "}
-                <span className="text-[#050505] dark:text-white italic">Stories</span>
+                <span className="text-[#050505] dark:text-white italic">
+                  Stories
+                </span>
               </h2>
               <div className="w-20 h-1 bg-primary mx-auto rounded-full" />
               <p className="text-lg dark:text-slate-300 max-w-md font-light italic text-[#050505] dark:text-lg">

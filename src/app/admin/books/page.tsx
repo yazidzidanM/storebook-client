@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { queryClient } from "@/providers/tanstack-providers";
 import BookModal from "@/components/books/bookModal";
 import BookTable from "@/components/books/bookTable";
+import { ConfirmDeleteModal } from "@/components/common/modalDelete";
 
 export type Mode = "add" | "edit";
 
@@ -34,17 +35,22 @@ export const EMPTY_BOOK: TBook = {
 };
 
 const AdminBooks = () => {
-  const { user, isAuthenticated, token } = useAuthStore();
+  const { user, isAuthenticated, token, hasHydrated } = useAuthStore();
   const router = useRouter();
   const { reset } = useForm<TBook>({
     defaultValues: EMPTY_BOOK,
   });
+  const api = apiPrivate(token || "");
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedBook, setSelectedBook] = useState<TBook>(EMPTY_BOOK);
   const [search, setSearch] = useState<string>("");
   const [mode, setMode] = useState<Mode>("add");
-  const api = apiPrivate(token || "");
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const handleAskDelete = (book: TBook) => {
+    setSelectedBook(book);
+    setDeleteOpen(true);
+  };
 
   const { data: books, isLoading: isBookLoading } =
     useQuery({
@@ -84,7 +90,7 @@ const AdminBooks = () => {
     },
   });
 
-  const { mutate: del } = useMutation({
+  const { mutate: del, isPending } = useMutation({
     mutationKey: ["del-book"],
     mutationFn: (id: number) => api.delete(`/api/books/${id}`),
     onSuccess: () => {
@@ -95,11 +101,6 @@ const AdminBooks = () => {
       toast.error("error adding book");
     },
   });
-
-  const handleDelete = (id: number) => {
-    del(id);
-    toast.success("success delete book");
-  };
 
   const { mutate: put } = useMutation({
     mutationKey: ["put-book"],
@@ -159,10 +160,12 @@ const AdminBooks = () => {
     ) ?? [];
 
   useEffect(() => {
+    if (!hasHydrated) return;
+
     if (!isAuthenticated || user?.role !== "admin" || !token) {
-      router.push("/login");
+      router.replace("/login");
     }
-  }, [isAuthenticated, user, router, token]);
+  }, [hasHydrated, isAuthenticated, user, token, router]);
 
   const bookFormProps = {
     mode: mode,
@@ -208,7 +211,7 @@ const AdminBooks = () => {
           <div className="bg-card rounded-xl shadow-card overflow- border border-border">
             <BookTable
               filteredBooks={filteredBooks}
-              handleDelete={handleDelete}
+              handleDelete={handleAskDelete}
               handleMode={setMode}
               handleOpen={setIsModalOpen}
               handleSelectedBook={setSelectedBook}
@@ -216,6 +219,20 @@ const AdminBooks = () => {
           </div>
         </div>
       )}
+
+      <ConfirmDeleteModal
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title="Delete Book"
+        message={`Are you sure you want to delete "${selectedBook?.title}"? This action cannot be undone.`}
+        loading={isPending}
+        onConfirm={() => {
+          if (!selectedBook) return;
+          del(selectedBook.id!, {
+            onSuccess: () => setDeleteOpen(false),
+          });
+        }}
+      />
 
       <BookModal
         book={selectedBook}

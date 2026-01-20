@@ -4,26 +4,80 @@ import { Navbar } from "@/modules/index/navbar/navbar";
 import { ArrowRight, BookOpen, Shield, Sparkles, Truck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { books, categories } from "./(data mentah)/data";
 import { BookCard } from "@/components/books/bookCard";
 import { Footer } from "@/modules/index/footer";
 import * as s from "@/modules/index/home/styles";
 import { SectionHeader } from "@/modules/index/home/section-header";
 import { useTheme } from "next-themes";
 import useAuthStore from "@/store/authStore";
+import { useCartStore } from "@/store/cartStore";
+import { TBook } from "@/validation/book";
+import { apiPublic } from "@/instance/axios";
+import { TCategory } from "@/validation/category";
+import apiResponse from "@/types/res/response";
+import { useQuery } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
+import { BookCardSkeleton } from "@/components/books/bookCardSkeleton";
+import cartItemAdd from "@/logic/cart/cartAdd";
 
 export default function Home() {
-  const { user, isAuthenticated } = useAuthStore();
-  const featuredBooks = books.slice(0, 4);
-  const newArrivals = books.slice(4, 8);
+  const { user, isAuthenticated, cartId, token } = useAuthStore();
+  const { items, addItem } = useCartStore();
   const theme = useTheme();
+
+  const addToCart = async (bookId: number, stock?: number) => {
+    const item = items.find((item) => item.bookId === String(bookId));
+
+    if (item?.quantity === stock) return toast.error(`Maximum stock reached`);
+    if(user && isAuthenticated){
+      await cartItemAdd(bookId, token ?? "")
+    }
+    addItem({ bookId: String(bookId), quantity: 1 });
+    toast.success("success add to cart");
+  };
+
+  const { data: books, isLoading: isBookLoading } =
+    useQuery({
+      queryKey: ["books"],
+      queryFn: async () => {
+        const res = await apiPublic.get("/api/books");
+        return res.data;
+      },
+    }) ?? [];
+
+  const { data: categories, isLoading: isCategoriesLoading } =
+    useQuery<apiResponse<TCategory>, boolean, apiResponse<TCategory>>({
+      queryKey: ["categories"],
+      queryFn: async () => {
+        const res = await apiPublic.get("/api/categories");
+        return res.data;
+      },
+    }) ?? [];
+
+  const fullsetBook: TBook[] = books?.data?.map((book: TBook) => {
+    const category = categories?.data?.find(
+      (category: TCategory) => category.id === Number(book.categoryId),
+    );
+    return { ...book, category: category?.name };
+  });
+
+  const slicedCategories = categories?.data.slice(0, 6).map((category) => {
+    const count = fullsetBook?.filter(
+      (book) => Number(book.categoryId) === category.id,
+    ).length;
+    return { ...category, bookCount: count };
+  });
+
+  const featuredBooks = fullsetBook?.slice(0, 4);
+  const newArrivals = fullsetBook?.slice(4, 8);
 
   return (
     <div className={s.page}>
       <Navbar />
 
       <section className={s.section}>
-        <div className={s.heroGlow} />
+        {theme.resolvedTheme === "dark" && <div className={s.heroGlow} />}
         <div className="container mx-auto px-4 py-16 md:py-24 ">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 animate-slide-up">
@@ -87,24 +141,24 @@ export default function Home() {
                   <img
                     src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&h=400&fit=crop"
                     alt="Book 1"
-                    className="rounded-2xl shadow-elevated w-full object-cover h-52"
+                    className="rounded-2xl shadow-xl shadow-gray-500/35 w-full object-cover h-52"
                   />
                   <img
                     src="https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=300&h=400&fit=crop"
                     alt="Book 2"
-                    className="rounded-2xl shadow-elevated w-full object-cover h-64"
+                    className="rounded-2xl shadow-xl shadow-gray-500/35 w-full object-cover h-64"
                   />
                 </div>
                 <div className="space-y-4 pt-8">
                   <img
                     src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&h=400&fit=crop"
                     alt="Book 3"
-                    className="rounded-2xl shadow-elevated w-full object-cover h-64"
+                    className="rounded-2xl shadow-xl shadow-gray-500/35 w-full object-cover h-64"
                   />
                   <img
                     src="https://images.unsplash.com/photo-1532012197267-da84d127e765?w=300&h=400&fit=crop"
                     alt="Book 4"
-                    className="rounded-2xl shadow-elevated w-full object-cover h-52"
+                    className="rounded-2xl shadow-xl shadow-gray-500/35 w-full object-cover h-52"
                   />
                 </div>
               </div>
@@ -126,7 +180,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 border-b border-border/50 dark:bg-linear-to-t dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F]">
+      <section
+        className="py-12 border-b border-border/50 
+      dark:bg-linear-to-t dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F]"
+      >
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="flex items-center gap-4 p-4 ">
@@ -181,12 +238,24 @@ export default function Home() {
               </Link>
             </Button>
           </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-            {featuredBooks.map((book) => (
-              <BookCard key={book.id} book={book} />
-            ))}
-          </div>
+          {isBookLoading || isCategoriesLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <BookCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+              {featuredBooks &&
+                featuredBooks?.map((book: TBook) => (
+                  <BookCard
+                    key={book.id}
+                    book={book}
+                    handleAddToCart={addToCart}
+                  />
+                ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -202,7 +271,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map((category) => (
+            {slicedCategories?.map((category) => (
               <Link
                 key={category.id}
                 href={`/catalog?category=${category.name}`}
@@ -234,11 +303,24 @@ export default function Home() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-            {newArrivals.map((book) => (
-              <BookCard key={book.id} book={book} />
-            ))}
-          </div>
+          {isBookLoading || isCategoriesLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <BookCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+              {newArrivals &&
+                newArrivals?.map((book: TBook) => (
+                  <BookCard
+                    key={book.id}
+                    book={book}
+                    handleAddToCart={addToCart}
+                  />
+                ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -280,8 +362,24 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       <Footer theme={theme.resolvedTheme} />
+      <Toaster
+        position="top-right"
+        theme={theme.resolvedTheme}
+        toastOptions={{
+          style: {
+            background:
+              theme.resolvedTheme === "dark"
+                ? "linear-gradient(to right, #C6A96B, #837047, #55492b)"
+                : "linear-gradient(to right, #2563eb, #4f46e5, #8b5cf6)",
+            color: "#fff",
+            borderRadius: "0.75rem",
+            boxShadow: "0 4px 14px rgba(0,0,0,0.25)",
+            marginTop: "80px",
+            padding: "12px 20px",
+          },
+        }}
+      />
     </div>
   );
 }
