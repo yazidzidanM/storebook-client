@@ -20,7 +20,6 @@ import useAuthStore from '@/store/authStore';
 
 interface AdminLayoutProps {
   children: React.ReactNode;
-  title: string;
 }
 
 const menuItems = [
