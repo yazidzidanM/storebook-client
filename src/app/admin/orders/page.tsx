@@ -8,9 +8,6 @@ import { useRouter } from "next/navigation";
 const AdminOrders = () => {
   const router = useRouter()
   const { user, isAuthenticated, token, hasHydrated } = useAuthStore();
-  if (!isAuthenticated || user?.role !== "admin") {
-    return null;
-  }
 
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("id-ID", {

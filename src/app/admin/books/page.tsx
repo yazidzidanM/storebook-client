@@ -154,7 +154,7 @@ const AdminBooks = () => {
 
   const filteredBooks =
     rendering?.filter(
-      (book: any) =>
+      (book: TBook) =>
         book.title.toLowerCase().includes(search.toLowerCase()) ||
         book.author.toLowerCase().includes(search.toLowerCase())
     ) ?? [];

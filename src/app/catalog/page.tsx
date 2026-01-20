@@ -139,7 +139,9 @@ const Catalog = () => {
       <Navbar />
 
       <main className="flex-1 py-8 bg-background dark:bg-linear-to-b dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F]">
-        {theme.resolvedTheme === "dark" && <div className={s.heroGlow} />}
+        {(theme.resolvedTheme === "dark" ? "dark" : "light") === "dark" && (
+          <div className={s.heroGlow} />
+        )}
         <div className="container mx-auto px-4">
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-serif font-bold">
@@ -264,14 +266,18 @@ const Catalog = () => {
         </div>
       </main>
 
-      <Footer theme={theme.resolvedTheme} />
+      <Footer theme={theme.resolvedTheme === "dark" ? "dark" : "light"} />
       <Toaster
         position="top-right"
-        theme={theme.resolvedTheme}
+        theme={theme.resolvedTheme === "dark" ? "dark" : "light"}
         toastOptions={{
           style: {
             background:
-              theme.resolvedTheme === "dark"
+              (theme.resolvedTheme as
+                | "system"
+                | "light"
+                | "dark"
+                | undefined) === "dark"
                 ? "linear-gradient(to right, #C6A96B, #837047, #55492b)"
                 : "linear-gradient(to right, #2563eb, #4f46e5, #8b5cf6)",
             color: "#fff",

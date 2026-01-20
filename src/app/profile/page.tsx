@@ -69,7 +69,7 @@ const Profile = () => {
   useEffect(() => {
     if (!hasHydrated) return;
 
-    if (!isAuthenticated || !user|| !token) {
+    if (!isAuthenticated || !user || !token) {
       router.replace("/login");
     }
   }, [hasHydrated, isAuthenticated, user, token, router]);
@@ -88,7 +88,9 @@ const Profile = () => {
           bg-linear-to-br from-indigo-600/10 via-[#f3f3f3] to-[#e0e0e0]
       dark:bg-linear-to-t dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F]"
         >
-          {theme.resolvedTheme === "dark" && <div className={s.heroGlow} />}
+          {(theme.resolvedTheme === "dark" ? "dark" : "light") === "dark" && (
+            <div className={s.heroGlow} />
+          )}
           <div className="container mx-auto px-4 max-w-2xl">
             <h1 className="text-3xl font-serif font-bold mb-8">
               My <span className="dark:text-[#C6A96B]">Profile</span>
@@ -185,11 +187,15 @@ const Profile = () => {
           </div>
           <Toaster
             position="top-right"
-            theme={theme.resolvedTheme}
+            theme={theme.resolvedTheme === "dark" ? "dark" : "light"}
             toastOptions={{
               style: {
                 background:
-                  theme.resolvedTheme === "dark"
+                  (theme.resolvedTheme as
+                    | "system"
+                    | "light"
+                    | "dark"
+                    | undefined) === "dark"
                     ? "linear-gradient(to right, #C6A96B, #837047, #55492b)"
                     : "linear-gradient(to right, #2563eb, #4f46e5, #8b5cf6)",
                 color: "#fff",
@@ -202,7 +208,7 @@ const Profile = () => {
           />
         </main>
 
-        <Footer theme={theme.resolvedTheme} />
+        <Footer theme={theme.resolvedTheme === "dark" ? "dark" : "light"} />
       </div>
     </>
   );

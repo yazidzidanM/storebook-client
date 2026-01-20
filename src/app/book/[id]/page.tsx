@@ -26,7 +26,7 @@ import { useCartStore } from "@/store/cartStore";
 
 const BookDetail = () => {
   const { items, addItem, totalitems } = useCartStore();
-  
+
   const { id } = useParams();
   const theme = useTheme();
 
@@ -60,10 +60,11 @@ const BookDetail = () => {
       : [];
 
   const book: TBook = fullsetBook.find((book: TBook) => book.id === Number(id));
-  
-  const relatedBooks = fullsetBook.filter((item: TBook) => {
-    return item?.categoryId === book?.categoryId && item.id !== Number(id)
-  }) ?? [];
+
+  const relatedBooks =
+    fullsetBook.filter((item: TBook) => {
+      return item?.categoryId === book?.categoryId && item.id !== Number(id);
+    }) ?? [];
 
   const addToCart = (id: number) => {
     addItem({ bookId: String(id), quantity: 1 });
@@ -83,7 +84,7 @@ const BookDetail = () => {
             </Button>
           </div>
         </main>
-        <Footer theme={theme.resolvedTheme} />
+        <Footer theme={theme.resolvedTheme === "dark" ? "dark" : "light"} />
       </div>
     );
   }
@@ -229,7 +230,11 @@ const BookDetail = () => {
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {relatedBooks.map((relBook: TBook) => (
-                  <BookCard key={relBook.id} book={relBook} handleAddToCart={addToCart}/>
+                  <BookCard
+                    key={relBook.id}
+                    book={relBook}
+                    handleAddToCart={addToCart}
+                  />
                 ))}
               </div>
             </section>
@@ -237,7 +242,7 @@ const BookDetail = () => {
         </div>
       </main>
 
-      <Footer theme={theme.resolvedTheme} />
+      <Footer theme={theme.resolvedTheme === "dark" ? "dark" : "light"} />
     </div>
   );
 };

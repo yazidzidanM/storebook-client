@@ -31,7 +31,7 @@ import { useRouter } from "next/navigation";
 
 const Checkout = () => {
   const { items, clearCart } = useCartStore();
-  const { user, isAuthenticated, token ,hasHydrated } = useAuthStore();
+  const { user, isAuthenticated, token, hasHydrated } = useAuthStore();
   const router = useRouter();
   const theme = useTheme();
   const { handleSubmit, register } = useForm<TCheckout>({
@@ -66,10 +66,6 @@ const Checkout = () => {
   };
 
   const onSubmit = async () => {
-    // if (!formData.name || !formData.phone || !formData.address) {
-    //   return;
-    // }
-
     setIsSubmitting(true);
 
     // Simulate order processing
@@ -104,16 +100,6 @@ const Checkout = () => {
         0,
       );
     }
-  }
-
-  if (!isAuthenticated) {
-    // navigate('/login?redirect=/checkout');
-    return null;
-  }
-
-  if (items.length === 0 && !orderComplete) {
-    // navigate('/cart');
-    return null;
   }
 
   const btnStyle =
@@ -155,18 +141,23 @@ const Checkout = () => {
             </Button>
           </div>
         </main>
-        <Footer theme={theme.resolvedTheme} />
+        <Footer theme={theme.resolvedTheme === "dark" ? "dark" : "light"} />
       </div>
     );
   }
 
   useEffect(() => {
-      if (!hasHydrated) return;
-  
-      if (!isAuthenticated || !user|| !token) {
-        router.replace("/login");
-      }
-    }, [hasHydrated, isAuthenticated, user, token, router]);
+    if (!hasHydrated) return;
+
+    if (!isAuthenticated || !user || !token) {
+      router.replace("/login");
+    }
+  }, [hasHydrated, isAuthenticated, user, token, router]);
+
+  if (items.length === 0 && !orderComplete) {
+    // navigate('/cart');
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -370,7 +361,7 @@ const Checkout = () => {
         </div>
       </main>
 
-      <Footer theme={theme.resolvedTheme} />
+      <Footer theme={theme.resolvedTheme === "dark" ? "dark" : "light"} />
     </div>
   );
 };

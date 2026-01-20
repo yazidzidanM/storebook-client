@@ -270,7 +270,10 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
-      <Toaster position="top-left" theme={theme.resolvedTheme} />
+      <Toaster
+        position="top-left"
+        theme={theme.resolvedTheme === "dark" ? "dark" : "light"}
+      />
     </>
   );
 }

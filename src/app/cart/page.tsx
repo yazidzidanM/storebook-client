@@ -82,7 +82,7 @@ const Cart = () => {
   };
 
   const handleRemove = async (bookId: string, title: string) => {
-    await removeCartItem(bookId, token ?? "")
+    await removeCartItem(bookId, token ?? "");
     removeItem(bookId);
     toast.success(`success remove ${title}`);
   };
@@ -90,10 +90,10 @@ const Cart = () => {
     bookId: string,
     newQuantity: number,
     type: "add" | "decre",
-    stock?: number
+    stock?: number,
   ) => {
-    if(stock === newQuantity - 1) return toast.error(`Maximum stock reached`);
-    await updateQtyCartItem(Number(bookId), newQuantity, token ?? "")
+    if (stock === newQuantity - 1) return toast.error(`Maximum stock reached`);
+    await updateQtyCartItem(Number(bookId), newQuantity, token ?? "");
     if (type === "add") {
       addItem({ bookId, quantity: 1 });
       return toast.success(`success add ${newQuantity} to cart`);
@@ -125,7 +125,7 @@ const Cart = () => {
             </Button>
           </div>
         </main>
-        <Footer theme={theme.resolvedTheme} />
+        <Footer theme={theme.resolvedTheme === "dark" ? "dark" : "light"} />
       </div>
     );
   }
@@ -139,7 +139,9 @@ const Cart = () => {
       bg-linear-to-br from-indigo-600/10 via-[#f3f3f3] to-[#e0e0e0]
       dark:bg-linear-to-t dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F]"
       >
-        {theme.resolvedTheme === "dark" && <div className={s.heroGlow} />}
+        {(theme.resolvedTheme === "dark" ? "dark" : "light") === "dark" && (
+          <div className={s.heroGlow} />
+        )}
         <div className="container mx-auto px-4">
           <h1 className="text-3xl font-serif font-bold mb-8">
             Shopping <span className="dark:text-[#C6A96B]"> Cart</span>
@@ -214,7 +216,7 @@ const Cart = () => {
                                   String(book?.id),
                                   book.quantity + 1,
                                   "add",
-                                  book.stock
+                                  book.stock,
                                 )
                               }
                             >
@@ -333,14 +335,18 @@ const Cart = () => {
           )}
         </div>
       </main>
-      <Footer theme={theme.resolvedTheme} />
+      <Footer theme={theme.resolvedTheme === "dark" ? "dark" : "light"} />
       <Toaster
         position="top-right"
-        theme={theme.resolvedTheme}
+        theme={theme.resolvedTheme === "dark" ? "dark" : "light"}
         toastOptions={{
           style: {
             background:
-              theme.resolvedTheme === "dark"
+              (theme.resolvedTheme as
+                | "system"
+                | "light"
+                | "dark"
+                | undefined) === "dark"
                 ? "linear-gradient(to right, #C6A96B, #837047, #55492b)"
                 : "linear-gradient(to right, #2563eb, #4f46e5, #8b5cf6)",
             color: "#fff",

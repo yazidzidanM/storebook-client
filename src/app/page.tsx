@@ -30,8 +30,8 @@ export default function Home() {
     const item = items.find((item) => item.bookId === String(bookId));
 
     if (item?.quantity === stock) return toast.error(`Maximum stock reached`);
-    if(user && isAuthenticated){
-      await cartItemAdd(bookId, token ?? "")
+    if (user && isAuthenticated) {
+      await cartItemAdd(bookId, token ?? "");
     }
     addItem({ bookId: String(bookId), quantity: 1 });
     toast.success("success add to cart");
@@ -77,7 +77,9 @@ export default function Home() {
       <Navbar />
 
       <section className={s.section}>
-        {theme.resolvedTheme === "dark" && <div className={s.heroGlow} />}
+        {(theme.resolvedTheme === "dark" ? "dark" : "light") === "dark" && (
+          <div className={s.heroGlow} />
+        )}
         <div className="container mx-auto px-4 py-16 md:py-24 ">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 animate-slide-up">
@@ -330,7 +332,7 @@ export default function Home() {
           bg-linear-to-t from-gray-900 via-gray-900 to-gray-900
         text-white dark:text-[#C6A96B]"
       >
-        {theme.resolvedTheme === "dark" && (
+        {(theme.resolvedTheme === "dark" ? "dark" : "light") === "dark" && (
           <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_bottom,#C6A96B22,transparent_33%)]" />
         )}
         <div className="container mx-auto px-4 text-center">
@@ -362,14 +364,18 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <Footer theme={theme.resolvedTheme} />
+      <Footer theme={theme.resolvedTheme === "dark" ? "dark" : "light"} />
       <Toaster
         position="top-right"
-        theme={theme.resolvedTheme}
+        theme={theme.resolvedTheme === "dark" ? "dark" : "light"}
         toastOptions={{
           style: {
             background:
-              theme.resolvedTheme === "dark"
+              (theme.resolvedTheme as
+                | "system"
+                | "light"
+                | "dark"
+                | undefined) === "dark"
                 ? "linear-gradient(to right, #C6A96B, #837047, #55492b)"
                 : "linear-gradient(to right, #2563eb, #4f46e5, #8b5cf6)",
             color: "#fff",

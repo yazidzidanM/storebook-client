@@ -9,13 +9,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import {
-  BookOpen,
-  Info,
-  Phone,
-  ShoppingCart,
-  LogOut,
-} from "lucide-react";
+import { BookOpen, Info, Phone, ShoppingCart, LogOut } from "lucide-react";
 import { ModeToggle } from "@/components/common/toggleDarkMode";
 import { useTheme } from "next-themes";
 import * as s from "@/modules/index/home/styles";
@@ -51,11 +45,13 @@ export function MobileMenuSheet({
           <SheetTitle className="font-serif text-xl tracking-tight">
             Menu
           </SheetTitle>
-          <div/>
+          <div />
         </div>
       </SheetHeader>
 
-      {theme.resolvedTheme === "dark" && <div className={s.heroGlow} />}
+      {(theme.resolvedTheme === "dark" ? "dark" : "light") === "dark" && (
+        <div className={s.heroGlow} />
+      )}
 
       <nav className="flex flex-col gap-1">
         <NavItem href="/" icon={BookOpen} label="Home" />
@@ -87,9 +83,7 @@ export function MobileMenuSheet({
               </div>
               <div className="text-sm leading-tight">
                 <p className="font-medium">{user?.name}</p>
-                <p className="text-muted-foreground capitalize">
-                  {user?.role}
-                </p>
+                <p className="text-muted-foreground capitalize">{user?.role}</p>
               </div>
             </div>
 

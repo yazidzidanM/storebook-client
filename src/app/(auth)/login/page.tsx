@@ -29,7 +29,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const theme = useTheme();
   const router = useRouter();
-  const isDarkMode = theme.resolvedTheme === "dark";
+  const isDarkMode = theme.resolvedTheme === "dark" ? "dark" : "light";
 
   const {
     register,
@@ -230,13 +230,13 @@ export default function LoginPage() {
               </h2>
               <div className="w-20 h-1 bg-primary mx-auto rounded-full" />
               <p className="text-lg dark:text-slate-300 max-w-md font-light italic text-[#050505] dark:text-lg">
-                "A room without books is like a body without a soul."
+                &quot;A room without books is like a body without a soul.&quot;
               </p>
             </div>
           </div>
         </div>
       </div>
-      <Toaster position="top-right" theme={theme.resolvedTheme} />
+      <Toaster position="top-right" theme={theme.resolvedTheme === "dark" ? "dark" : "light"} />
     </>
   );
 }

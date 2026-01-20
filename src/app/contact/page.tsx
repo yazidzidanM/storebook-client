@@ -41,10 +41,14 @@ const Contact = () => {
     <div className={s.page}>
       <Navbar />
 
-      <main className="relative flex-1 py-16 
+      <main
+        className="relative flex-1 py-16 
       bg-linear-to-br from-indigo-600/6 via-[#f3f3f3] to-[#e0e0e0]
-      dark:bg-linear-to-t dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F]">
-        {theme.resolvedTheme === "dark" && <div className={s.heroGlow} />}
+      dark:bg-linear-to-t dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F]"
+      >
+        {(theme.resolvedTheme === "dark" ? "dark" : "light") === "dark" && (
+          <div className={s.heroGlow} />
+        )}
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-serif font-bold mb-4">
@@ -187,7 +191,7 @@ const Contact = () => {
         </div>
       </main>
 
-      <Footer theme={theme.resolvedTheme} />
+      <Footer theme={theme.resolvedTheme === "dark" ? "dark" : "light"} />
     </div>
   );
 };
