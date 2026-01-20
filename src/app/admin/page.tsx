@@ -56,10 +56,7 @@ const AdminDashboard = () => {
       },
       enabled: !!token,
     }) ?? [];
-
-    console.log(books?.data?.length)
-    console.log(categories?.data?.length)
-
+    
   const stats = [
     {
       label: "Total Books",

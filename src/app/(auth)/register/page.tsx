@@ -30,8 +30,6 @@ export default function RegisterPage() {
   const router = useRouter();
   const theme = useTheme();
 
-  console.log(items);
-
   const {
     register,
     handleSubmit,

@@ -8,12 +8,9 @@ export default async function updateQtyCartItem(
   token: string,
 ) {
   const api = apiPrivate(token);
-  console.log(bookId)
-  console.log(quantity)
   try {
     const response = await api.put(`/api/cartItems/${String(bookId)}`, {quantity});
     const data = response.data;
-    console.log(data)
 
     if (data.code === 200) {
       return {

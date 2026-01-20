@@ -2,9 +2,12 @@
 import { orders } from "@/app/(data mentah)/data";
 import * as s from "../../../modules/index/home/styles";
 import useAuthStore from "@/store/authStore";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const AdminOrders = () => {
-  const { user, isAuthenticated } = useAuthStore();
+  const router = useRouter()
+  const { user, isAuthenticated, token, hasHydrated } = useAuthStore();
   if (!isAuthenticated || user?.role !== "admin") {
     return null;
   }
@@ -21,6 +24,14 @@ const AdminOrders = () => {
       month: "short",
       year: "numeric",
     });
+
+  useEffect(() => {
+      if (!hasHydrated) return;
+  
+      if (!isAuthenticated || user?.role !== "admin" || !token) {
+        router.replace("/login");
+      }
+    }, [hasHydrated, isAuthenticated, user, token, router]);
 
   return (
     <div className="space-y-6 p-6 relative">

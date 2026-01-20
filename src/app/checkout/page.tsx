@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   MapPin,
   Phone,
@@ -31,7 +31,7 @@ import { useRouter } from "next/navigation";
 
 const Checkout = () => {
   const { items, clearCart } = useCartStore();
-  const { user, isAuthenticated, token } = useAuthStore();
+  const { user, isAuthenticated, token ,hasHydrated } = useAuthStore();
   const router = useRouter();
   const theme = useTheme();
   const { handleSubmit, register } = useForm<TCheckout>({
@@ -91,8 +91,6 @@ const Checkout = () => {
       };
     })
     .filter(Boolean);
-
-  console.log(carts);
   function getTotalPrice(fee: boolean) {
     if (fee) {
       const totals = carts.reduce(
@@ -161,6 +159,14 @@ const Checkout = () => {
       </div>
     );
   }
+
+  useEffect(() => {
+      if (!hasHydrated) return;
+  
+      if (!isAuthenticated || !user|| !token) {
+        router.replace("/login");
+      }
+    }, [hasHydrated, isAuthenticated, user, token, router]);
 
   return (
     <div className="min-h-screen flex flex-col">

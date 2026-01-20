@@ -29,7 +29,6 @@ const BookDetail = () => {
   
   const { id } = useParams();
   const theme = useTheme();
-  console.log(id);
 
   const { data: books, isLoading: isBookLoading } =
     useQuery({

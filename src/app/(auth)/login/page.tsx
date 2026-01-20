@@ -60,16 +60,12 @@ export default function LoginPage() {
     let cartItems: cartItems[] = [];
     
     if (items.length > 0) {
-      console.log("sync")
       const syncedCart = await syncCartItems(items, authenticatedUser.access_token);
       cartItems = syncedCart.data as cartItems[];
     } else {
-      console.log("get")
       const getCart = await getCartItems(authenticatedUser.access_token);
-      console.log(getCart)
       cartItems = getCart.data as cartItems[];
     }
-    console.log(items.length)
 
     setAuthentication(true);
     setUser(authenticatedUser.user);

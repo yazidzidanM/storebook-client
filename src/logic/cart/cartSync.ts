@@ -12,15 +12,11 @@ export default async function syncCartItems(cartItems: any, token: string) {
   const payload = cartItems.map((item: cartItems) => {
     return { bookId: Number(item.bookId), quantity: item.quantity };
   });
-  console.log(payload);
-  console.log(token);
 
   const api = apiPrivate(token);
   try {
     const response = await api.post("/api/cartItems/sync", payload);
     const data = response.data as apiResponse<cartItems>;
-
-    console.log(data);
 
     if (data.code === 200) {
       return {

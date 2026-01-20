@@ -8,8 +8,6 @@ export default async function getCartItems(token: string){
     const response = await api.get(`/api/cartItems`);
     const data = response.data
 
-    console.log(data)
-
     if (data.code === 200) {
       return {
         success: true,

@@ -45,7 +45,6 @@ export function MobileMenuSheet({
         dark:bg-linear-to-b dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F]
       "
     >
-      {/* ===== HEADER ===== */}
       <SheetHeader className="relative mb-6">
         <div className="flex items-center justify-between">
           <ModeToggle />
@@ -58,7 +57,6 @@ export function MobileMenuSheet({
 
       {theme.resolvedTheme === "dark" && <div className={s.heroGlow} />}
 
-      {/* ===== NAV ===== */}
       <nav className="flex flex-col gap-1">
         <NavItem href="/" icon={BookOpen} label="Home" />
         <NavItem href="/catalog" icon={BookOpen} label="Catalog" />
@@ -78,10 +76,8 @@ export function MobileMenuSheet({
         />
       </nav>
 
-      {/* SPACER */}
       <div className="my-6 border-t" />
 
-      {/* ===== AUTH ===== */}
       <div className="mt-auto">
         {isAuthenticated ? (
           <div className="space-y-4">
@@ -128,8 +124,6 @@ export function MobileMenuSheet({
     </SheetContent>
   );
 }
-
-/* ===== NAV ITEM ===== */
 
 function NavItem({
   href,

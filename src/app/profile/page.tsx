@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { User, Mail, Phone, MapPin, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 
 const Profile = () => {
-  const { user, isAuthenticated, token, setUser } = useAuthStore();
+  const { user, isAuthenticated, token, setUser, hasHydrated } = useAuthStore();
   const idUser = user?.uuid;
   const theme = useTheme();
   const router = useRouter();
@@ -65,6 +65,14 @@ const Profile = () => {
     setIsSaving(true);
     put(data);
   };
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+
+    if (!isAuthenticated || !user|| !token) {
+      router.replace("/login");
+    }
+  }, [hasHydrated, isAuthenticated, user, token, router]);
 
   return (
     <>
