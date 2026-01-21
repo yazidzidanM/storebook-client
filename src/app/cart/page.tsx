@@ -37,6 +37,8 @@ const Cart = () => {
   const { user, isAuthenticated, token, setUser } = useAuthStore();
   const { items, removeItem, addItem } = useCartStore();
 
+  console.log(items)
+
   const { data: books, isLoading: isBookLoading } =
     useQuery({
       queryKey: ["books"],

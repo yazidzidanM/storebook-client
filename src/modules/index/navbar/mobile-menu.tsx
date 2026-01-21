@@ -9,7 +9,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Info, Phone, ShoppingCart, LogOut } from "lucide-react";
+import { BookOpen, Info, Phone, ShoppingCart, LogOut, LayoutDashboard } from "lucide-react";
 import { ModeToggle } from "@/components/common/toggleDarkMode";
 import { useTheme } from "next-themes";
 import * as s from "@/modules/index/home/styles";
@@ -39,7 +39,7 @@ export function MobileMenuSheet({
         dark:bg-linear-to-b dark:from-[#2E2E2E] dark:via-[#1A1A1A] dark:to-[#0F0F0F]
       "
     >
-      <SheetHeader className="relative mb-6">
+      <SheetHeader className="relative">
         <div className="flex items-center justify-between">
           <ModeToggle />
           <SheetTitle className="font-serif text-xl tracking-tight">
@@ -54,6 +54,9 @@ export function MobileMenuSheet({
       )}
 
       <nav className="flex flex-col gap-1">
+        {user?.role === "admin" && <>
+          <NavItem href="/admin" icon={LayoutDashboard} label="Dashboard" />
+        </>}
         <NavItem href="/" icon={BookOpen} label="Home" />
         <NavItem href="/catalog" icon={BookOpen} label="Catalog" />
         <NavItem href="/about" icon={Info} label="About" />
@@ -72,45 +75,55 @@ export function MobileMenuSheet({
         />
       </nav>
 
-      <div className="my-6 border-t" />
+      <div className="border-t" />
 
       <div className="mt-auto">
         {isAuthenticated ? (
           <div className="space-y-4">
-            <div className="flex items-center gap-3 rounded-2xl bg-muted/60 p-4">
+            <div className="flex items-center gap-3 rounded-2xl bg-muted/60 px-4 py-3 m-4">
               <div className="h-10 w-10 shrink-0 rounded-full bg-indigo-600 text-white dark:bg-[#C6A96B] flex items-center justify-center font-semibold">
                 {user?.name?.[0] ?? "U"}
               </div>
-              <div className="text-sm leading-tight">
-                <p className="font-medium">{user?.name}</p>
-                <p className="text-muted-foreground capitalize">{user?.role}</p>
-              </div>
+              <Link href="/profile">
+                <div className="text-sm leading-tight">
+                  <p className="font-medium">{user?.name}</p>
+                  <p className="text-muted-foreground capitalize">
+                    {user?.role}
+                  </p>
+                </div>
+              </Link>
             </div>
 
             <SheetFooter>
               <SheetClose asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start gap-2 text-destructive"
-                  onClick={onLogout}
-                >
-                  <LogOut className="h-4 w-4" />
-                  Logout
-                </Button>
+                <Link href="/login">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start gap-2 text-destructive"
+                    onClick={onLogout}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </Button>
+                </Link>
               </SheetClose>
             </SheetFooter>
           </div>
         ) : (
           <SheetFooter className="flex-col gap-2">
             <SheetClose asChild>
-              <Button className="w-full bg-indigo-600 hover:bg-indigo-700">
-                Login
-              </Button>
+              <Link href="/login" className="w-full">
+                <Button className="w-full bg-indigo-600 text-white dark:bg-[#C6A96B]">
+                  Login
+                </Button>
+              </Link>
             </SheetClose>
             <SheetClose asChild>
-              <Button variant="outline" className="w-full">
-                Register
-              </Button>
+              <Link href="/register" className="w-full">
+                <Button variant="outline" className="w-full">
+                  Register
+                </Button>
+              </Link>
             </SheetClose>
           </SheetFooter>
         )}

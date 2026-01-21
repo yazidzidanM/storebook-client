@@ -102,6 +102,19 @@ const Checkout = () => {
     }
   }
 
+  useEffect(() => {
+    if (!hasHydrated) return;
+
+    if (!isAuthenticated || !user || !token) {
+      router.replace("/login");
+    }
+  }, [hasHydrated, isAuthenticated, user, token, router]);
+
+  if (items.length === 0 && !orderComplete) {
+    // navigate('/cart');
+    return null;
+  }
+
   const btnStyle =
     "w-full cursor-pointer mt-3 bg-linear-to-r from-blue-600 via-indigo-600 to-violet-600 text-white dark:bg-linear-to-r dark:from-[#C6A96B] dark:via-[#837047] dark:to-[#55492b] dark:border-white/10 py-3 font-semibold hover:scale-[1.02] active:scale-95 transition-transform disabled:opacity-50 disabled:cursor-not-allowed";
 
@@ -144,19 +157,6 @@ const Checkout = () => {
         <Footer theme={theme.resolvedTheme === "dark" ? "dark" : "light"} />
       </div>
     );
-  }
-
-  useEffect(() => {
-    if (!hasHydrated) return;
-
-    if (!isAuthenticated || !user || !token) {
-      router.replace("/login");
-    }
-  }, [hasHydrated, isAuthenticated, user, token, router]);
-
-  if (items.length === 0 && !orderComplete) {
-    // navigate('/cart');
-    return null;
   }
 
   return (
